@@ -2,6 +2,9 @@ package com.galaxy.easybuy.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.galaxy.easybuy.entity.Account;
+import com.galaxy.easybuy.entity.AccountAddress;
+
+import java.util.List;
 
 /**
  * (Account)表服务接口
@@ -12,5 +15,5 @@ import com.galaxy.easybuy.entity.Account;
 public interface AccountService extends IService<Account> {
 
 
-
+    List<AccountAddress> getAccountAddress(Integer id);
 }

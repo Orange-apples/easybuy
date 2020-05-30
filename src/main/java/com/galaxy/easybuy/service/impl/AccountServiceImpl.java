@@ -3,10 +3,12 @@ package com.galaxy.easybuy.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.galaxy.easybuy.dao.AccountDao;
 import com.galaxy.easybuy.entity.Account;
+import com.galaxy.easybuy.entity.AccountAddress;
 import com.galaxy.easybuy.service.AccountService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * (Account)表服务实现类
@@ -19,4 +21,8 @@ public class AccountServiceImpl extends ServiceImpl<AccountDao, Account> impleme
     @Resource
     private AccountDao accountDao;
 
+    @Override
+    public List<AccountAddress> getAccountAddress(Integer id) {
+        return accountDao.getAccountAddress(id);
+    }
 }
