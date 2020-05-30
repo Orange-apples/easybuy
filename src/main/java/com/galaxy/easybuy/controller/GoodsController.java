@@ -13,7 +13,7 @@ import javax.annotation.Resource;
  * @since 2020-05-29 22:26:35
  */
 @RestController
-@RequestMapping("goods")
+@RequestMapping("/goods")
 public class GoodsController {
     /**
      * 服务对象
