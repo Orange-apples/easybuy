@@ -10,6 +10,6 @@ import java.util.List;
  * @author makejava
  * @since 2020-05-30 14:19:54
  */
-public interface CategoryService extends IService<Category> {
+public interface CategoryService extends  IService<Category> {
 
 }
