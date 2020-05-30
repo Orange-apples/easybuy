@@ -12,7 +12,7 @@
     </resultMap>
 <!--    查询所有商品-->
     <select id="queryGoods" resultType="goods">
-        select id name ,img,price from goods where id=#{id}
+        select id,name ,img,price from goods where id=#{id}
     </select>
 
 </mapper>

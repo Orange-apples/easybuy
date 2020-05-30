@@ -10,8 +10,22 @@
         <association property="parrentName" column="parrent_id" javaType="java.lang.String" select="queryParrentName"/>
     </resultMap>
 
+    <resultMap id="IndexCategoryMap" type="com.galaxy.easybuy.entity.Category">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="l" column="l"/>
+        <result property="parrentId" column="parrent_id" jdbcType="INTEGER"/>
+        <collection property="sonCategory" column="id" ofType="category" select="querySonCategory"/>
+    </resultMap>
 
     <select id="queryParrentName" resultType="java.lang.String">
         select name from category where id = #{parrentId}
+    </select>
+    <select id="querySonCategory" resultMap="IndexCategoryMap">
+        select * from category where parrent_id = #{id}
+    </select>
+
+    <select id="queryAllByIndex" resultMap="IndexCategoryMap">
+        select * from category where l = 1;
     </select>
 </mapper>

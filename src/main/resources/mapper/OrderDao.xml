@@ -9,7 +9,7 @@
         <result property="orderNum" column="order_num"/>
         <result property="orderPrice" column="order_price"/>
         <result property="address" column="address"/>
-        <result property="createTime" column="create_time"/>
+        <result property="createTime" column="create_time" jdbcType="DATE"/>
         <result property="accountName" column="account_name"/>
         <collection column="id" property="goodsOrder" ofType="com.galaxy.easybuy.entity.GoodsOrder" select="queryGoodsOrder"/>
 

@@ -34,6 +34,8 @@ public class Account implements Serializable {
     
     private String phone;
 
+    private Integer isAdmin;
+
 
 
 }

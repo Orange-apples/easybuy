@@ -17,5 +17,11 @@ import java.util.List;
  */
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao,Category> implements CategoryService {
+@Resource
+CategoryDao categoryDao;
+    @Override
+    public List<Category> queryAllByIndex() {
+        return categoryDao.queryAllByIndex();
 
+    }
 }

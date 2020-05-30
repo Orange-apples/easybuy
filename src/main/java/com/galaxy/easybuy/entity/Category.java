@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * (Category)实体类
@@ -16,7 +17,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(resultMap = "categoryMap",excludeProperty = {"parrentName","lName"})
+@TableName(resultMap = "categoryMap",excludeProperty = {"parrentName","lName","sonCategory"})
 public class Category implements Serializable {
     private static final long serialVersionUID = -75742202570497422L;
     
@@ -31,6 +32,8 @@ public class Category implements Serializable {
     private String parrentName;
 
     private String lName;
+
+    private List<Category> sonCategory;
 
     public void setL(Integer l){
         this.l = l;

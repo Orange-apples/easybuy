@@ -27,6 +27,12 @@ public class CategoryController {
     @Resource
     private CategoryService categoryService;
 
+    @RequestMapping("/queryAllByIndex")
+    public List<Category> queryAllByIndex(){
+        List<Category> categoryList = categoryService.queryAllByIndex();
+        return categoryList;
+    }
+
     @RequestMapping("/queryAll")
     public Map<String, Object> queryAll(Integer current) {
         current = current==null?1:current;
