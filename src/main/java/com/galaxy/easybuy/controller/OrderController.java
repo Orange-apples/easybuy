@@ -13,10 +13,12 @@ import com.galaxy.easybuy.entity.Order;
 import com.galaxy.easybuy.service.GoodsOrderService;
 import com.galaxy.easybuy.service.GoodsService;
 import com.galaxy.easybuy.service.OrderService;
+import com.sun.org.apache.xpath.internal.operations.Or;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -25,17 +27,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/order")
 public class OrderController {
     @Resource
     OrderService orderService;
+    @Resource
+    GoodsService goodsService;
+    @Resource
+    GoodsOrderService goodsOrderService;
 
-    @ResponseBody
-    @RequestMapping("/myOrder")
     /**
      * 查询我的订单
      */
+    @RequestMapping("/myOrder")
     public Map myOrder(Model model, Integer current, HttpServletRequest request) {
         current = current == null ? 1 : current;
         Account loginAccount = (Account) request.getSession().getAttribute("loginAccount");
@@ -49,11 +54,10 @@ public class OrderController {
         return map;
     }
 
-    @ResponseBody
-    @RequestMapping("/allOrder")
     /**
      * 查询所有有订单
      */
+    @RequestMapping("/allOrder")
     public Map allOrder(Model model, HttpServletRequest request, Integer current) {
         current = current == null ? 1 : current;
         Page<Order> page = orderService.page(new Page<Order>(current, ConstantNum.PAGESIZE), null);
@@ -65,17 +69,13 @@ public class OrderController {
         return map;
     }
 
-    @Resource
-    GoodsService goodsService;
-    @Resource
-    GoodsOrderService goodsOrderService;
-    @RequestMapping("/create")
     /**
      * 添加订单信息
      * @param accountAddress,用户选择的地址
      * @param cart,购物车的json，包括id,count
      * @return order 添加完成后将此订单返回
      */
+    @RequestMapping("/create")
     public Order create(String accountAddress, String cart, HttpServletRequest request) throws JsonProcessingException {
         //接收购物车信息
         ObjectMapper om = new ObjectMapper();
