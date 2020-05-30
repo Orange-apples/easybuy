@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * (Goods)实体类
@@ -32,7 +33,9 @@ public class Goods implements Serializable {
     
     private Integer categoryId;
     
-    private Object createTime;
+    private Date createTime;
+//TODO 商品类别的一对一关联
+//    private L3Category l3Category
 
 
 }
