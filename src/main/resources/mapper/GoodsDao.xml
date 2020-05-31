@@ -12,7 +12,20 @@
         <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" />
     </resultMap>
-
-
+<!--跟剧一级分类查询商品-->
+<select id="queryByL1Category" resultType="goods">
+    select id,name,price,img from goods where category_id in(
+        select id from category where parrent_id in (
+            select id from category where parrent_id = #{categoryId}))
+</select>
+    <!--跟剧二级分类查询商品-->
+<select id="queryByL2Category" resultType="goods">
+    select id,name,price,img from goods where category_id in(
+        select id from category where parrent_id = #{categoryId})
+</select>
+    <!--跟剧三级分类查询商品-->
+<select id="queryByL3Category" resultType="goods">
+    select id,name,price,img from goods where category_id = #{categoryId}
+</select>
 
 </mapper>
