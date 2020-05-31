@@ -8,11 +8,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.galaxy.easybuy.component.CartItem;
 import com.galaxy.easybuy.component.ConstantNum;
 import com.galaxy.easybuy.entity.Account;
+import com.galaxy.easybuy.entity.AccountAddress;
 import com.galaxy.easybuy.entity.GoodsOrder;
 import com.galaxy.easybuy.entity.Order;
-import com.galaxy.easybuy.service.GoodsOrderService;
-import com.galaxy.easybuy.service.GoodsService;
-import com.galaxy.easybuy.service.OrderService;
+import com.galaxy.easybuy.service.*;
 import com.sun.org.apache.xpath.internal.operations.Or;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +35,8 @@ public class OrderController {
     GoodsService goodsService;
     @Resource
     GoodsOrderService goodsOrderService;
+    @Resource
+    AddressService addressService;
 
     /**
      * 查询我的订单
@@ -76,7 +77,7 @@ public class OrderController {
      * @return order 添加完成后将此订单返回
      */
     @RequestMapping("/create")
-    public Order create(String accountAddress, String cart, HttpServletRequest request) throws JsonProcessingException {
+    public Order create(String accountAddress, AccountAddress newAdderss, String cart, HttpServletRequest request) throws JsonProcessingException {
         //接收购物车信息
         ObjectMapper om = new ObjectMapper();
         List<CartItem> cartItems = om.readValue(cart, new TypeReference<List<CartItem>>() {
@@ -88,7 +89,13 @@ public class OrderController {
         order.setAccountName(loginAccount.getUserName());
         order.setCreateTime(new Date());
         order.setOrderNum(new Date().getTime() + "");
-        order.setAddress(accountAddress);
+        if(accountAddress!=null && accountAddress != ""){
+            order.setAddress(accountAddress);
+        }else{
+            newAdderss.setAccount_id(loginAccount.getId());
+            addressService.save(newAdderss);
+            order.setAddress(newAdderss.getAddress());
+        }
         Double price = 0.0;
         for (CartItem cartItem : cartItems) {
           price += goodsService.getById(cartItem.getId()).getPrice() * cartItem.getCount();

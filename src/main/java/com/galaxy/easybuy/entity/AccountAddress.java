@@ -18,6 +18,7 @@ import java.io.Serializable;
 public class AccountAddress implements Serializable {
     private static final long serialVersionUID = 256167821068167028L;
     
+    private Integer account_id;
 
     private String address;
     
