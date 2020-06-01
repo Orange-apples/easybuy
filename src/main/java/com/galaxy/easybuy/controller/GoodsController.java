@@ -3,6 +3,7 @@ package com.galaxy.easybuy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.galaxy.easybuy.component.ConstantNum;
+import com.galaxy.easybuy.component.MsgResult;
 import com.galaxy.easybuy.entity.Goods;
 import com.galaxy.easybuy.service.GoodsService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +31,7 @@ public class GoodsController {
     private GoodsService goodsService;
 
     @RequestMapping("/queryAll")
-    public Map queryAll(Integer current,Goods goods){
+    public MsgResult queryAll(Integer current, Goods goods){
         current = current==null?1:current;
         QueryWrapper<Goods> wrapper = new QueryWrapper<>();
         if(goods.getName()!=null&&goods.getName()!=""){
@@ -42,19 +43,20 @@ public class GoodsController {
         map.put("pages",page.getPages());
         map.put("current",page.getCurrent());
         map.put("goodsList",page.getRecords());
-        return map;
+        return new MsgResult(1,map);
     }
     @RequestMapping("queryById")
-    public Goods queryById(Integer id){
-        return goodsService.getById(id);
+    public MsgResult queryById(Integer id){
+        return new MsgResult(1,goodsService.getById(id));
     }
 
 
 
 
     @RequestMapping("/queryByCategory")
-    public List<Goods> queryByCategory(Integer l, Integer categoryId) {
+    public MsgResult queryByCategory(Integer l, Integer categoryId) {
         List<Goods> goodsList = new LinkedList<Goods>();
+        if(l==null)return new MsgResult(0,"查询失败，请稍后再试！");
         if (l == 1) {
             goodsList = goodsService.queryByL1Category(categoryId);
         } else if (l == 2) {
@@ -62,7 +64,7 @@ public class GoodsController {
         } else if (l == 3) {
             goodsList = goodsService.queryByL3Category(categoryId);
         }
-        return goodsList;
+        return new MsgResult(1,goodsList);
     }
 
 }

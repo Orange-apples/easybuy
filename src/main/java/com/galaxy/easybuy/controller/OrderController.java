@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.galaxy.easybuy.component.CartItem;
 import com.galaxy.easybuy.component.ConstantNum;
+import com.galaxy.easybuy.component.MsgResult;
 import com.galaxy.easybuy.entity.Account;
 import com.galaxy.easybuy.entity.AccountAddress;
 import com.galaxy.easybuy.entity.GoodsOrder;
@@ -42,7 +43,7 @@ public class OrderController {
      * 查询我的订单
      */
     @RequestMapping("/myOrder")
-    public Map myOrder(Model model, Integer current, HttpServletRequest request) {
+    public MsgResult myOrder(Model model, Integer current, HttpServletRequest request) {
         current = current == null ? 1 : current;
         Account loginAccount = (Account) request.getSession().getAttribute("loginAccount");
         //TODO 根据用户id查询订单
@@ -52,14 +53,14 @@ public class OrderController {
         map.put("total", page.getTotal());
         map.put("current", page.getCurrent());
         map.put("pages", page.getPages());
-        return map;
+        return new MsgResult(1,map);
     }
 
     /**
      * 查询所有有订单
      */
     @RequestMapping("/allOrder")
-    public Map allOrder(Model model, HttpServletRequest request, Integer current) {
+    public MsgResult allOrder(Model model, HttpServletRequest request, Integer current) {
         current = current == null ? 1 : current;
         Page<Order> page = orderService.page(new Page<Order>(current, ConstantNum.PAGESIZE), null);
         HashMap<String, Object> map = new HashMap<>();
@@ -67,7 +68,7 @@ public class OrderController {
         map.put("total", page.getTotal());
         map.put("current", page.getCurrent());
         map.put("pages", page.getPages());
-        return map;
+        return new MsgResult(1,map);
     }
 
     /**
@@ -77,7 +78,7 @@ public class OrderController {
      * @return order 添加完成后将此订单返回
      */
     @RequestMapping("/create")
-    public Order create(String accountAddress, AccountAddress newAdderss, String cart, HttpServletRequest request) throws JsonProcessingException {
+    public MsgResult create(String accountAddress, AccountAddress newAdderss, String cart, HttpServletRequest request) throws JsonProcessingException {
         //接收购物车信息
         ObjectMapper om = new ObjectMapper();
         List<CartItem> cartItems = om.readValue(cart, new TypeReference<List<CartItem>>() {
@@ -93,7 +94,8 @@ public class OrderController {
             order.setAddress(accountAddress);
         }else{
             newAdderss.setAccount_id(loginAccount.getId());
-            addressService.save(newAdderss);
+            boolean flag = addressService.save(newAdderss);
+            if(!flag)return new MsgResult(0,"用户地址添加失败！",null);
             order.setAddress(newAdderss.getAddress());
         }
         Double price = 0.0;
@@ -101,16 +103,21 @@ public class OrderController {
           price += goodsService.getById(cartItem.getId()).getPrice() * cartItem.getCount();
         }
         order.setOrderPrice(price);
-        orderService.save(order);
+        boolean flag = orderService.save(order);
+        if(!flag)return new MsgResult(0,"订单创建失败！",null);
         //订单详情信息
         for (CartItem cartItem : cartItems) {
             GoodsOrder goodsOrder = new GoodsOrder();
             goodsOrder.setGoodsId(cartItem.getId());
             goodsOrder.setOrderId(order.getId());
             goodsOrder.setCount(cartItem.getCount());
-            goodsOrderService.save(goodsOrder);
+            boolean f = goodsOrderService.save(goodsOrder);
+            if(!f){
+                orderService.removeById(order.getId());
+                return new MsgResult(0,"订单创建失败",null);
+            }
         }
-        return order;
+        return new MsgResult(1,order);
     }
 
 }
