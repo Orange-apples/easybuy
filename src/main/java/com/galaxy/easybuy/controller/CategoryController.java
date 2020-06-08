@@ -68,11 +68,15 @@ public class CategoryController {
     }
     @RequestMapping("/insert")
     public MsgResult insert(Category category){
-        if(categoryService.save(category)){
-            return new MsgResult(1,category);
-        }else{
-            return new MsgResult(0,"执行失败！",category);
-        }
+     try{
+         if(categoryService.save(category)){
+             return new MsgResult(1,category);
+         }else{
+             return new MsgResult(0,"执行失败！",category);
+         }
+     }catch (Exception e){
+         return new MsgResult(0,"执行失败！",null);
+     }
     }
 
     @RequestMapping("/delete")

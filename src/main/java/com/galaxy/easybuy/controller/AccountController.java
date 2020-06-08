@@ -48,11 +48,16 @@ public class AccountController {
 
     @RequestMapping("insert")
     public MsgResult insert(Account account){
+    try {
         if(accountService.save(account)){
             return new MsgResult(1,account);
         }else{
             return new MsgResult(0,"执行失败！",null);
         }
+    }catch (Exception e){
+        return new MsgResult(0,"执行失败！",null);
+
+    }
     }
 
 }
